@@ -72,5 +72,5 @@ export class CreateVehiculoDto {
   })
   @IsOptional()
   @IsIn([EstadoVehiculo.AVAILABLE, EstadoVehiculo.INACTIVE])
-  status?: EstadoVehiculo;
+  estado?: EstadoVehiculo;
 }

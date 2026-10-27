@@ -196,7 +196,7 @@ async function run() {
   await findOrCreate(
     ds,
     Mantenimiento,
-    { descripcion: 'Cambio de aceite y filtros', vehiculoId: abc.id },
+    { descripcion: 'Cambio de aceite y filtros' },
     {
       tipo: TipoMantenimiento.PREVENTIVE,
       descripcion: 'Cambio de aceite y filtros',
@@ -208,8 +208,11 @@ async function run() {
       costoFinal: 350000,
       finishedAt: new Date(now - 47 * hour),
       kilometrajeFinal: 45000,
+      vehiculo: abc,
       vehiculoId: abc.id,
+      mecanico: laura,
       mecanicoId: laura.id,
+      taller: centro,
       tallerId: centro.id,
     },
   );
@@ -218,7 +221,7 @@ async function run() {
   await findOrCreate(
     ds,
     Mantenimiento,
-    { descripcion: 'Reemplazo de pastillas de freno', vehiculoId: ghi.id },
+    { descripcion: 'Reemplazo de pastillas de freno' },
     {
       tipo: TipoMantenimiento.CORRECTIVE,
       descripcion: 'Reemplazo de pastillas de freno',
@@ -226,8 +229,11 @@ async function run() {
       fechaProgramada: new Date(now - hour),
       fechaFinalizacion: new Date(now + 2 * hour),
       estado: EstadoMantenimiento.IN_PROGRESS,
+      vehiculo: ghi,
       vehiculoId: ghi.id,
+      mecanico: carlos,
       mecanicoId: carlos.id,
+      taller: centro,
       tallerId: centro.id,
     },
   );

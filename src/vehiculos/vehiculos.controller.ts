@@ -35,11 +35,18 @@ export class VehiculosController {
     return this.service.findAll();
   }
 
+  @Get('inactivos')
+  @ApiOperation({ summary: 'Listar vehículos inactivos' })
+  @Roles(Rol.ADMIN)
+  findInactive() {
+    return this.service.findInactive();
+  }
+
   @Get('placa/:placa')
-  @ApiOperation({ summary: 'Buscar un vehículo por su placa' })
+  @ApiOperation({ summary: 'Buscar a vehículos por placa' })
   @Roles(Rol.ADMIN, Rol.TECHNICIAN)
-  findByPlate(@Param('plate') plate: string) {
-    return this.service.findByPlate(plate);
+  findByPlate(@Param('placa') placa: string) {
+    return this.service.findByPlate(placa);
   }
 
   @Get(':id')

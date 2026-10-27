@@ -60,21 +60,21 @@ export class CreateMantenimientoDto {
   duracionMinutos?: number;
 
   @ApiProperty({
-    description: 'ID único del vehículo asociado al mantenimiento',
+    description: 'ID único del vehículo associated to the maintenance',
     example: 1,
   })
   @IsInt()
   vehiculoId: number;
 
   @ApiProperty({
-    description: 'ID del mecánico asignado para realizar el trabajo',
+    description: 'ID del mecánico assigned to perform the work',
     example: 3,
   })
   @IsInt()
   mecanicoId: number;
 
   @ApiProperty({
-    description: 'ID del taller mecánico donde se llevará a cabo el servicio',
+    description: 'ID del taller mecánico where the service will be carried out',
     example: 2,
   })
   @IsInt()

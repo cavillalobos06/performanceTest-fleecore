@@ -48,6 +48,7 @@ export function assertClosingData(data: {
   costoFinal?: number;
   finishedAt?: string;
   kilometraje?: number;
+  kilometrajeFinal?: number;
 }): void {
   const missing: string[] = [];
   if (!data.trabajoRealizado || !data.trabajoRealizado.trim())
@@ -55,7 +56,9 @@ export function assertClosingData(data: {
   if (data.costoFinal === undefined || data.costoFinal === null)
     missing.push('finalCost (costo final)');
   if (!data.finishedAt) missing.push('finishedAt (fecha de finalización)');
-  if (data.kilometraje === undefined || data.kilometraje === null)
+
+  const finalKm = data.kilometrajeFinal ?? data.kilometraje;
+  if (finalKm === undefined || finalKm === null)
     missing.push('finalMileage (kilometraje final)');
 
   if (missing.length > 0) {

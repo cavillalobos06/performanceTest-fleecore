@@ -7,7 +7,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   AuthUser,
   CurrentUser,
@@ -17,6 +17,7 @@ import { Rol } from '../common/enum.js';
 import { CreateMantenimientoDto } from './dto/create-mantenimiento.dto.js';
 import { UpdateEstadoMantenimientoDto } from './dto/update-mantenimiento.dto.js';
 import { MantenimientosService } from './mantenimientos.service.js';
+import { TipoMantenimiento } from '../common/enum.js';
 
 @ApiTags('mantenimientos')
 @ApiBearerAuth()
@@ -27,6 +28,38 @@ export class MantenimientosController {
   @Post()
   @ApiOperation({ summary: 'Crear una orden de mantenimiento' })
   @Roles(Rol.ADMIN)
+  @ApiBody({
+    type: CreateMantenimientoDto,
+    description: 'Datos para crear una orden de mantenimiento',
+    examples: {
+      preventive: {
+        summary: 'Mantenimiento preventivo',
+        value: {
+          tipo: TipoMantenimiento.PREVENTIVE,
+          descripcion: 'Cambio de aceite y filtros de aire',
+          kilometraje: 45000,
+          fechaProgramada: '2026-10-28T08:00:00.000Z',
+          duracionMinutos: 120,
+          vehiculoId: 1,
+          mecanicoId: 3,
+          tallerId: 2,
+        },
+      },
+      corrective: {
+        summary: 'Mantenimiento correctivo',
+        value: {
+          tipo: TipoMantenimiento.CORRECTIVE,
+          descripcion: 'Reemplazo de pastillas de freno',
+          kilometraje: 80000,
+          fechaProgramada: '2026-10-28T09:30:00.000Z',
+          duracionMinutos: 90,
+          vehiculoId: 2,
+          mecanicoId: 1,
+          tallerId: 1,
+        },
+      },
+    },
+  })
   create(@Body() dto: CreateMantenimientoDto) {
     return this.service.create(dto);
   }
@@ -84,8 +117,36 @@ export class MantenimientosController {
   }
 
   @Patch(':id/estado')
-  @ApiOperation({ summary: 'Actualizar el estado de una orden de mantenimiento' })
+  @ApiOperation({ summary: 'Actualizar the estado de una orden de mantenimiento' })
   @Roles(Rol.ADMIN, Rol.TECHNICIAN)
+  @ApiBody({
+    type: UpdateEstadoMantenimientoDto,
+    description: 'Datos para actualizar el estado de la orden de mantenimiento',
+    examples: {
+      inProgress: {
+        summary: 'Iniciar mantenimiento',
+        value: {
+          estado: 'IN_PROGRESS',
+        },
+      },
+      completed: {
+        summary: 'Finalizar mantenimiento',
+        value: {
+          estado: 'COMPLETED',
+          trabajoRealizado: 'Cambio de aceite, filtro de aceite y filtro de aire',
+          costoFinal: 350000,
+          finishedAt: '2026-10-28T10:30:00.000Z',
+          kilometrajeFinal: 45200,
+        },
+      },
+      cancelled: {
+        summary: 'Cancelar mantenimiento',
+        value: {
+          estado: 'CANCELLED',
+        },
+      },
+    },
+  })
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateEstadoMantenimientoDto,

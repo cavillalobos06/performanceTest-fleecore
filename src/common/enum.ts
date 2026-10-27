@@ -18,5 +18,5 @@ export enum EstadoMantenimiento {
 export enum EstadoVehiculo {
   AVAILABLE = 'AVAILABLE',
   IN_MAINTENANCE = 'IN_MAINTENANCE',
-  INACTIVE = ' INACTIVE',
+  INACTIVE = 'INACTIVE',
 }
