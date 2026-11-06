@@ -1,114 +1,151 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# FleetCore API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+FleetCore is a REST API for managing a vehicle fleet, mechanics, workshops, and maintenance records. It is built with NestJS, TypeScript, TypeORM, and PostgreSQL. Swagger is provided for API exploration and testing.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Coder Information
 
-## Description
+- **Name:** Camilo Andrés Villalobos Ruiz
+- **Clan:** Node/Nest
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Requirements
 
-## Project setup
+- Node.js 24 or a compatible recent Node.js release
+- npm
+- Docker and Docker Compose (recommended for running PostgreSQL), or a local PostgreSQL 16+ instance
+
+## 1. Install the dependencies
+
+Clone or extract this repository, then open a terminal in the project directory:
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
+## 2. Configure environment variables
+
+Create a `.env` file by copying the example file:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Review the variables in `.env`:
+
+| Variable | Description | Example |
+|---|---|---|
+| `PORT` | Port used by the API | `3000` |
+| `DB_HOST` | PostgreSQL hostname | `localhost` |
+| `DB_PORT` | PostgreSQL port | `5432` |
+| `DB_USERNAME` | PostgreSQL username | `postgres` |
+| `DB_PASSWORD` | PostgreSQL password | `postgres` |
+| `DB_NAME` | Database name | `fleetcore` |
+| `JWT_SECRET` | Secret used to sign JWT tokens | Replace the example with a private secret |
+| `JWT_EXPIRES_IN` | JWT expiration period | `1h` |
+| `API_KEYS` | Comma-separated API keys for external integrations | `demo-key-1,demo-key-2` |
+
+The values above are local development examples. Do not use example secrets or API keys in production.
+
+## 3. Start PostgreSQL
+
+### Option A: Start only the database with Docker Compose
+
+The following command starts the PostgreSQL service defined in `docker-compose.yml`:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up -d db
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Check that it is running:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker compose ps
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+For this option, keep `DB_HOST=localhost` in your local `.env` file.
 
-## Observability
+### Option B: Use an existing PostgreSQL instance
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+Create a database named `fleetcore` (or use the name configured in `DB_NAME`) and update the database connection variables in `.env`.
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+## 4. Build the project and run the seeder
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+Build the TypeScript project:
 
-## Resources
+```bash
+npm run build
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Run the seeder:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+node dist/seed/seed.js
+```
 
-## Support
+The seeder creates sample users, mechanics, workshops, vehicles, and maintenance records. It is designed to be re-run without duplicating the seeded records.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Test credentials
 
-## Stay in touch
+| Role | Email | Password |
+|---|---|---|
+| Administrator | `admin@fleetcore.com` | `Admin123*` |
+| Technician | `tecnico1@fleetcore.com` | `Tech123*` |
+| Technician | `tecnico2@fleetcore.com` | `Tech123*` |
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Use these accounts for local testing only.
 
-## License
+## 5. Run the API
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Start the API in development mode:
+
+```bash
+npm run start:dev
+```
+
+The API will be available at:
+
+- **Base URL:** `http://localhost:3000`
+- **Swagger UI:** `http://localhost:3000/docs`
+
+Open Swagger, select an endpoint, and use **Try it out** to send requests.
+
+## 6. Authenticate and test protected endpoints
+
+1. In Swagger, open `POST /auth/login`.
+2. Submit a test user's email and password.
+3. Copy the returned `accessToken`.
+4. Click **Authorize** in Swagger and provide the token as a Bearer token.
+5. Call the protected endpoints available to that user's role.
+
+The API uses JWT authentication and role-based authorization. The integration endpoint uses an API key instead of a JWT.
+
+### External integration endpoint
+
+The integration route for a vehicle's maintenance history is:
+
+```http
+GET /integrations/vehiculos/{placa}/historial-mantenimiento
+```
+
+Include this header with one of the keys configured in `API_KEYS`:
+
+```http
+x-api-key: demo-key-1
+```
+
+For example, the seeded vehicle plate `ABC123` can be used to test the route. In Swagger, open the **Authorize** control or the endpoint's header parameter and enter the API key as required by the documentation.
+
+## Useful commands
+
+```bash
+npm run start:dev  # Run in watch mode
+npm run build      # Compile the project
+```
+
+## Main modules
+
+- **Authentication:** registration, login, and current-user information.
+- **Vehicles:** vehicle records and status.
+- **Mechanics:** mechanic records and availability.
+- **Workshops:** workshop records and status.
+- **Maintenance:** maintenance scheduling, progress, and history.
+- **Integrations:** API-key-protected access to a vehicle's maintenance history.

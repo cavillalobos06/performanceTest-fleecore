@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-fleetcore}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - fleetcore-net
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+    ports:
+      - "${PORT:-3000}:3000"
+    networks:
+      - fleetcore-net
+
+volumes:
+  pgdata:
+
+networks:
+  fleetcore-net:
