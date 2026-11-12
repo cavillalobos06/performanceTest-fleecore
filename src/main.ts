@@ -6,6 +6,8 @@ import { AppModule } from './app.module.js';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors();
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -18,6 +20,7 @@ async function bootstrap() {
     .setTitle('FleetCore API')
     .setDescription('Gestión de mantenimiento de flota de vehículos')
     .setVersion('1.0')
+    .addServer('/')
     .addBearerAuth()
     .addApiKey({ type: 'apiKey', in: 'header', name: 'x-api-key' }, 'x-api-key')
     .build();
@@ -28,7 +31,7 @@ async function bootstrap() {
   );
 
   const port = process.env.PORT ?? 3000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.log(
     `API lista en http://localhost:${port}  |  Swagger en http://localhost:${port}/docs`,
   );
