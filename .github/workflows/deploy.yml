@@ -1,0 +1,35 @@
+name: Despliegue Automático en AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Desplegar API en EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Conectar por SSH y actualizar aplicación
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Cargar variables de entorno de Node/NVM y PM2
+            export PATH=$PATH:/usr/local/bin:~/.nvm/versions/node/$(ls ~/.nvm/versions/node | tail -n 1)/bin
+            
+            # 1. Entrar a la carpeta del proyecto (verifica el nombre exacto de tu carpeta)
+            cd ~/performanceTest-fleecore
+            
+            # 2. Descargar los últimos cambios de GitHub
+            git pull origin main
+            
+            # 3. Instalar dependencias y compilar NestJS
+            npm install
+            npm run build
+            
+            # 4. Reiniciar la aplicación en PM2 sin tiempo de inactividad
+            pm2 reload mi-api-nest
