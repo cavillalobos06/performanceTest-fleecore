@@ -26,7 +26,10 @@ import { IntegrationsModule } from './integrations/integrations.module.js';
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_NAME'),
         entities: ENTIDADES,
-        synchronize: true,
+        synchronize: false,
+        ssl:{
+          rejectUnauthorized: false,
+        }
       }),
     }),
     JwtModule.registerAsync({
