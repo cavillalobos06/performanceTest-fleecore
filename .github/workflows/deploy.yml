@@ -17,19 +17,23 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script_stop: true
           script: |
-            # Cargar variables de entorno de Node/NVM y PM2
-            export PATH=$PATH:/usr/local/bin:~/.nvm/versions/node/$(ls ~/.nvm/versions/node | tail -n 1)/bin
-            
-            # 1. Entrar a la carpeta del proyecto (verifica el nombre exacto de tu carpeta)
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            nvm use default
+
             cd ~/performanceTest-fleecore
-            
-            # 2. Descargar los últimos cambios de GitHub
-            git pull origin main
-            
-            # 3. Instalar dependencias y compilar NestJS
-            npm install
+            git fetch origin main
+            git reset --hard origin/main
+
+            npm ci
             npm run build
-            
-            # 4. Reiniciar la aplicación en PM2 sin tiempo de inactividad
-            pm2 reload mi-api-nest
+
+            if pm2 describe nestjs-api > /dev/null 2>&1; then
+              pm2 reload nestjs-api --update-env
+            else
+              pm2 start dist/main.js --name nestjs-api
+            fi
+            pm2 save
