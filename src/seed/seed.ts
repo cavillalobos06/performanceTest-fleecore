@@ -36,6 +36,9 @@ async function run() {
     database: process.env.DB_NAME,
     entities: ENTIDADES,
     synchronize: true,
+    ssl: {
+      rejectUnauthorized: false,
+    }
   });
   await ds.initialize();
 
